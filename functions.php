@@ -10,3 +10,34 @@ add_action(
 	},
 	0
 );
+
+add_action(
+	'init',
+	static function (): void {
+		$registry = WP_Block_Patterns_Registry::get_instance();
+
+		if ( $registry->is_registered( 'search-toggle' ) ) {
+			return;
+		}
+
+		register_block_pattern(
+			'search-toggle',
+			[
+				'title'      => 'Search Toggle (Legacy Alias)',
+				'categories' => [ 'utility' ],
+				'inserter'   => false,
+				'content'    => '<!-- wp:group {"layout":{"type":"constrained"}} --><div class="wp-block-group"></div><!-- /wp:group -->',
+			]
+		);
+	},
+	1
+);
+
+add_action(
+	'enqueue_block_editor_assets',
+	static function (): void {
+		wp_dequeue_script( 'blockify-editor' );
+		wp_deregister_script( 'blockify-editor' );
+	},
+	100
+);
